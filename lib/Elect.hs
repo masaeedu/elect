@@ -1,14 +1,15 @@
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE DeriveGeneric #-}
+
 module Elect where
 
-import Data.These (These(..), these)
-import Data.Void (Void)
-import Data.Bifunctor.TH (deriveBifunctor, deriveBifoldable, deriveBitraversable)
 import Data.Bifunctor (bimap)
-import Data.Semiring
-import GHC.Generics
+import Data.Bifunctor.TH (deriveBifoldable, deriveBifunctor, deriveBitraversable)
+import Data.Semiring (Semiring (..))
+import Data.These (These (..), these)
+import Data.Void (Void)
+import GHC.Generics (Generic)
 
 -- https://gist.github.com/masaeedu/f6b77eb3ed7d8a62693ffd44f2d93181
 
@@ -71,7 +72,7 @@ instance (Ord a, Semiring e) => Semiring (Elect a e)
 congress :: Elect (Elect a f) e -> Elect a (Either e f)
 congress = \case
   Abstain -> Abstain
-  Veto e  -> Veto $ Left e
+  Veto e -> Veto $ Left e
   Vote Abstain -> Abstain
   Vote (Veto f) -> Veto $ Right f
   Vote (Vote a) -> Vote a
